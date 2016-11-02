@@ -87,10 +87,14 @@ def beginsWith(s, pattern):
     return s[:len(pattern)] == pattern
 
 def loadFileIntoList(filename, list):
-    f = open(filename, 'r')
-    for word in f.readlines():
-        list.append(word.split(" ")[-1][:-1])
+    f = open(filename, 'r', encoding='utf-8')
+    for line in f:
+        list.append(line.strip().split(" ")[-1])
     f.close()
+	#Old code
+    """for word in f.readlines():
+        list.append(word.split(" ")[-1][:-1])
+    f.close()"""
 
 #load initial noun and adjective lists
 def loadWordLists():
@@ -321,16 +325,16 @@ def parseStatement(stat):
         else:
             expr = statement[len(first) + 1:]
         return target + " = " + parseExpr(expr) + " ;\n"
-    elif trimmed == "openyourheart" or trimmed == "openthyheart":
+    elif trimmed == "openyourheart" or trimmed == "openthyheart" or trimmed.endswith("openyourheart") or trimmed.endswith("openthyheart"):
         #numerical output
         return 'fprintf(stdout, "%d", ' + target + ');\n'
-    elif trimmed == "speakyourmind" or trimmed == "speakthymind":
+    elif trimmed == "speakyourmind" or trimmed == "speakthymind" or trimmed.endswith("speakyourmind") or trimmed.endswith("speakthymind"):
         #character output
         return 'fprintf(stdout, "%c", (char)' + target + ');\n'
-    elif trimmed == "listentoyourheart" or trimmed == "listentothyheart":
+    elif trimmed == "listentoyourheart" or trimmed == "listentothyheart" or trimmed.endswith("listentoyourheart") or trimmed.endswith("listentothyheart"):
         #numerical input
         return 'fgets(inputbuffer, BUFSIZ, stdin);\nsscanf(inputbuffer, "%d", &' + target + ');\n' #" = getchar() - '0';\n"
-    elif trimmed == "openyourmind" or trimmed == "openyourmind":
+    elif trimmed == "openyourmind" or trimmed == "openthymind" or trimmed.endswith("openyourmind") or trimmed.endswith("openthymind"):
         #character input
         return target + " = getchar();\n"
     elif first in ["am", "are", "art", "be", "is"]:
@@ -466,7 +470,7 @@ def parseAllActAndSceneDescriptions():
 Assert(len(sys.argv) > 1, "No input file")
 filename = sys.argv[1]
 
-f = open(filename, 'r')
+f = open(filename, 'r', encoding='utf-8')
 src = f.readlines()
 f.close()
 
@@ -482,6 +486,7 @@ N += 1
 
 writeToFile("// " + filename + "\n" +
 "// compiled with splc.py (c) Sam Donow 2013-2015\n" +
+"#include <cstdlib>\n" +
 "#include <stdio.h>\n" +
 "#include <math.h>\n" +
 '#include "include/mathhelpers.h"\n' +
